@@ -99,6 +99,7 @@ CREATE TABLE [dbo].[OrderPos](
 	OrderId			int NOT NULL CONSTRAINT FK_OrderId FOREIGN KEY REFERENCES Orders(OrderId) ON DELETE CASCADE,
 	OrderPosId		int NOT NULL,
 	ArticleId		int NOT NULL CONSTRAINT FK_ArticleId FOREIGN KEY REFERENCES Ref_Article(ArticleId) ON DELETE CASCADE,
+	Cst_Cost		decimal NOT NULL,
 	Cst_Price		decimal NOT NULL,
 	Amount			int NOT NULL,
 	Cst_PosSumme as Cst_Price*Amount,
