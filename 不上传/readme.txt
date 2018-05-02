@@ -1,1 +1,1 @@
-https://github.com/jackinz8/SmallShopDb.git
+https://github.com/jackinz8/SmallShop.git
