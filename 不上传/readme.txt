@@ -1,1 +1,0 @@
-https://github.com/jackinz8/SmallShop.git
