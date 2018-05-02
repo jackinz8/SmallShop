@@ -1,4 +1,4 @@
-﻿--use Nzhtest
+﻿use Nzhtest
 
 --------------------------------------------------------------
 CREATE TABLE [dbo].[Ref_Article](
@@ -10,18 +10,9 @@ CREATE TABLE [dbo].[Ref_Article](
 	[Remark] [nvarchar](200),
 	[IsActive] bit Default(1)
 )
---drop table Ref_Article
-select * from Ref_Article
-insert into Ref_Article values
-(N'APre',N'爱他美Pre段',800,14.95,'',1),
-(N'A1',N'爱他美1段',800,14.95,'',1),
-(N'A2',N'爱他美2段',800,14.95,'',1),
-(N'A3',N'爱他美3段',800,14.95,'',1)
---delete from Ref_Article
 
 ---------------------------------------------------------------
---drop table OrderPos
---drop table Orders
+
 CREATE TABLE [dbo].[Orders](
 	OrderId			int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	CustomerId		int NOT NULL FOREIGN KEY REFERENCES Ref_Customers(CustomerId),
@@ -51,54 +42,6 @@ CREATE TABLE [dbo].[OrderPos](
 )
 
 
-INSERT INTO [dbo].[Orders]
-           ([CustomerId]
-	       ,[AddressId]
-           ,[Cst_CostSumme]
-           ,[Cst_Pack]
-           ,[Cst_Express]
-           ,[Cst_ExpressCivil]
-           ,[Cst_Error]
-           ,[Cst_Payed]
-           ,[CreatedOn]
-           ,[PayedOn]
-           ,[SendOn]
-           ,[ReceivedOn]
-           ,[OrderStatus])
-     VALUES
-           (1
-	   ,1
-           ,1200
-           ,5
-           ,300
-           ,0
-           ,0
-           ,1800
-           ,GETDATE()
-           ,NULL
-           ,NULL
-           ,NULL
-           ,1)
-INSERT INTO [dbo].[OrderPos]
-           ([OrderId]
-           ,[OrderPosId]
-           ,[ArticleId]
-		   ,[Cst_Cost]
-           ,[Cst_Price]
-           ,[Amount]
-           ,[CreatedOn])
-     VALUES
-           (1
-           ,1
-           ,6
-		   ,120
-           ,200
-           ,3
-           ,GETDATE()),
-           (1
-           ,2
-           ,7
-		   ,120
-           ,200
-           ,3
-           ,GETDATE())
+--drop table Ref_Article
+--drop table OrderPos
+--drop table Orders
