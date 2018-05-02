@@ -1,4 +1,4 @@
-﻿use Nzhtest
+﻿--use Nzhtest
 
 --------------------------------------------------------------
 CREATE TABLE [dbo].[Ref_Article](
