@@ -1,5 +1,16 @@
 ﻿use Nzhtest
 
+--DROP TABLE [OrderPos]
+--DROP TABLE [Orders]
+
+--DROP TABLE [Ref_Addresses]
+--DROP TABLE [Ref_Customers]
+--DROP TABLE [Ref_Article]
+
+--DROP TABLE [Sys_OrderStatus]
+--DROP TABLE [Sys_CustomerGroup]
+--DROP TABLE [Sys_Currency]
+
 --3 Sys Tables--
 CREATE TABLE [dbo].[Sys_OrderStatus](
 	[OrderStatusId] [int] NOT NULL,
@@ -7,6 +18,7 @@ CREATE TABLE [dbo].[Sys_OrderStatus](
 	CONSTRAINT PK_OrderStatusId  PRIMARY KEY ([OrderStatusId])
 )
 GO
+
 CREATE TABLE [dbo].[Sys_CustomerGroup](
 	[DiscountGroupId] [int] NOT NULL,
 	[DiscountGroupName] [nvarchar](3) NOT NULL,
@@ -15,6 +27,7 @@ CREATE TABLE [dbo].[Sys_CustomerGroup](
 	CONSTRAINT PK_DiscountGroupId PRIMARY KEY ([DiscountGroupId])
 )
 GO
+
 CREATE TABLE [dbo].[Sys_Currency](
 	[CurrencyId] [int] IDENTITY(1,1) NOT NULL,
 	[Currency] [decimal](10, 2) NOT NULL,
@@ -24,22 +37,48 @@ CREATE TABLE [dbo].[Sys_Currency](
 GO
 
 --3 Ref Tables--
+CREATE TABLE [dbo].[Ref_Customers](
+	[CustomerId] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerName] [nvarchar](20) NULL,
+	[DiscountGroup] [int] NULL,
+	[Remark] [nvarchar](200) NULL,
+	CONSTRAINT PK_CustomerId PRIMARY KEY (CustomerId),
+	CONSTRAINT FK_DiscountGroup FOREIGN KEY([DiscountGroup]) REFERENCES [dbo].[Sys_CustomerGroup] ([DiscountGroupId]) ON DELETE CASCADE
+)
+GO
+
+CREATE TABLE [dbo].[Ref_Addresses](
+	[AddressId] [int] IDENTITY(1,1) NOT NULL,
+	[CustomerId] [int] NULL,
+	[Receiver] [nvarchar](20) NULL,
+	[AddressText] [nvarchar](100) NOT NULL,
+	[Zip] [nvarchar](10) NULL,
+	[Mobilephone] [nvarchar](20) NOT NULL,
+	[ChineseId] [nvarchar](18) NULL,
+	[Remark] [nvarchar](200) NULL,
+	[Status] [int] CONSTRAINT DV_Status DEFAULT (1) NOT NULL,
+	CONSTRAINT PK_AddressId PRIMARY KEY (AddressId),
+	CONSTRAINT FK_CustomerId FOREIGN KEY (CustomerId) REFERENCES [dbo].[Ref_Customers] ([CustomerId]) ON DELETE CASCADE
+)
+GO
+
 CREATE TABLE [dbo].[Ref_Article](
-	[ArticleId] [int] IDENTITY(1,1) Primary Key NOT NULL,
+	[ArticleId] [int] IDENTITY(1,1) NOT NULL,
 	[ArticleName] [nvarchar](50) NOT NULL,
 	[ArticleDescription] [nvarchar](100),
 	[Weight] int,
 	[PriceEur] decimal,
 	[Remark] [nvarchar](200),
-	[IsActive] bit Default(1)
+	[IsActive] bit Default(1),
+	CONSTRAINT PK_ArticleId PRIMARY KEY (ArticleId)
 )
+GO
 
-
---3 Main Tables--
+--2 Main Tables--
 CREATE TABLE [dbo].[Orders](
-	OrderId			int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	OrderId			int NOT NULL IDENTITY(1,1),
 	CustomerId		int NOT NULL FOREIGN KEY REFERENCES Ref_Customers(CustomerId),
-	AddressId		int NOT NULL FOREIGN KEY REFERENCES Ref_Addresses(AddressId),
+	AddressId		int NOT NULL CONSTRAINT FK_AddressId FOREIGN KEY REFERENCES Ref_Addresses(AddressId) ON DELETE CASCADE,
 	Cst_CostSumme		decimal default 0,
 	Cst_Pack		decimal default 0,
 	Cst_Express		decimal default 0,
@@ -52,19 +91,17 @@ CREATE TABLE [dbo].[Orders](
 	SendOn			datetime,
 	ReceivedOn		datetime,
 	OrderStatus		int NOT NULL,
+	CONSTRAINT PK_OrderId PRIMARY KEY (OrderId),
 )
+GO
+
 CREATE TABLE [dbo].[OrderPos](
-	OrderId			int NOT NULL FOREIGN KEY REFERENCES Orders(OrderId),
+	OrderId			int NOT NULL CONSTRAINT FK_OrderId FOREIGN KEY REFERENCES Orders(OrderId) ON DELETE CASCADE,
 	OrderPosId		int NOT NULL,
-	ArticleId		int NOT NULL FOREIGN KEY REFERENCES Ref_Article(ArticleId),
+	ArticleId		int NOT NULL CONSTRAINT FK_ArticleId FOREIGN KEY REFERENCES Ref_Article(ArticleId) ON DELETE CASCADE,
 	Cst_Price		decimal NOT NULL,
 	Amount			int NOT NULL,
 	Cst_PosSumme as Cst_Price*Amount,
-	CreatedOn		datetime NOT NULL DEFAULT GETDATE(),
-	primary key (OrderId, OrderPosId)
+	CreatedOn		datetime NOT NULL CONSTRAINT DV_CreatedOn DEFAULT GETDATE(),
+	CONSTRAINT PK_OrderId_OrderPosId PRIMARY KEY (OrderId, OrderPosId)
 )
-
-
---drop table Ref_Article
---drop table OrderPos
---drop table Orders
