@@ -68,6 +68,7 @@ CREATE TABLE [dbo].[Ref_Article](
 	[ArticleDescription] [nvarchar](100),
 	[Weight] int,
 	[PriceEur] decimal,
+	[SalePrice] decimal,
 	[Remark] [nvarchar](200),
 	[IsActive] bit Default(1),
 	CONSTRAINT PK_ArticleId PRIMARY KEY (ArticleId)
@@ -88,7 +89,7 @@ CREATE TABLE [dbo].[Orders](
 	Cst_Gain as Cst_Payed-Cst_CostSumme-Cst_Pack-Cst_Express-Cst_ExpressCivil-Cst_Error,
 	CreatedOn		datetime NOT NULL DEFAULT GETDATE(),
 	PayedOn			datetime,
-	SendOn			datetime,
+	SentOn			datetime,
 	ReceivedOn		datetime,
 	OrderStatus		int NOT NULL,
 	CONSTRAINT PK_OrderId PRIMARY KEY (OrderId),
