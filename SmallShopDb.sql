@@ -92,7 +92,7 @@ CREATE TABLE [dbo].[Orders](
 	PayedOn			datetime,
 	SentOn			datetime,
 	ReceivedOn		datetime,
-	OrderStatus		int NOT NULL,
+	OrderStatus	as (case when [ReceivedOn] IS NOT NULL then case when [PayedOn] IS NOT NULL then (6) else (5) end else case when [SentOn] IS NOT NULL then case when [PayedOn] IS NOT NULL then (4) else (3) end else case when [PayedOn] IS NOT NULL then (2) else (1) end end end)
 	CONSTRAINT PK_OrderId PRIMARY KEY (OrderId),
 )
 GO
