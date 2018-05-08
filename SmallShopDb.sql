@@ -131,7 +131,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM inserted)
 	BEGIN
 		SELECT @OrderId = OrderId FROM inserted
-		SELECT @CstSumme = SUM(Cst_Cost), @PrcSumme = SUM(Cst_Price) FROM OrderPos WHERE OrderId = @OrderId
+		SELECT @CstSumme = SUM(Cst_Cost * Amount), @PrcSumme = SUM(Cst_Price * Amount) FROM OrderPos WHERE OrderId = @OrderId
 		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
 
 	END
@@ -140,7 +140,7 @@ BEGIN
 	IF EXISTS (SELECT * FROM deleted) AND NOT EXISTS(SELECT * FROM inserted)
 	BEGIN
 		SELECT @OrderId = OrderId FROM deleted
-		SELECT @CstSumme = SUM(Cst_Cost), @PrcSumme = SUM(Cst_Price) FROM OrderPos WHERE OrderId = @OrderId
+		SELECT @CstSumme = SUM(Cst_Cost * Amount), @PrcSumme = SUM(Cst_Price * Amount) FROM OrderPos WHERE OrderId = @OrderId
 		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
 	END
 
