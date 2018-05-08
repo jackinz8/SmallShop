@@ -81,6 +81,7 @@ CREATE TABLE [dbo].[Orders](
 	CustomerId		int NOT NULL FOREIGN KEY REFERENCES Ref_Customers(CustomerId),
 	AddressId		int NOT NULL CONSTRAINT FK_AddressId FOREIGN KEY REFERENCES Ref_Addresses(AddressId) ON DELETE CASCADE,
 	Cst_CostSumme		decimal default 0,
+	Cst_PriceSumme		decimal default 0,
 	Cst_Pack		decimal default 0,
 	Cst_Express		decimal default 0,
 	Cst_ExpressCivil	decimal default 0,
