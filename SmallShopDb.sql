@@ -108,3 +108,41 @@ CREATE TABLE [dbo].[OrderPos](
 	CreatedOn		datetime NOT NULL CONSTRAINT DV_CreatedOn DEFAULT GETDATE(),
 	CONSTRAINT PK_OrderId_OrderPosId PRIMARY KEY (OrderId, OrderPosId)
 )
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER [dbo].[Trg_OrderPos_IUD]
+   ON  [dbo].[OrderPos]
+   AFTER INSERT,DELETE,UPDATE
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    DECLARE @OrderId int
+	DECLARE @CstSumme decimal
+	DECLARE @PrcSumme decimal
+
+	-- update, insert
+	IF EXISTS (SELECT * FROM inserted)
+	BEGIN
+		SELECT @OrderId = OrderId FROM inserted
+		SELECT @CstSumme = SUM(Cst_Cost), @PrcSumme = SUM(Cst_Price) FROM OrderPos WHERE OrderId = @OrderId
+		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
+
+	END
+
+	-- delete
+	IF EXISTS (SELECT * FROM deleted) AND NOT EXISTS(SELECT * FROM inserted)
+	BEGIN
+		SELECT @OrderId = OrderId FROM deleted
+		SELECT @CstSumme = SUM(Cst_Cost), @PrcSumme = SUM(Cst_Price) FROM OrderPos WHERE OrderId = @OrderId
+		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
+	END
+
+END
+GO
