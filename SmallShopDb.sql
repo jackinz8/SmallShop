@@ -132,7 +132,7 @@ BEGIN
 	BEGIN
 		SELECT @OrderId = OrderId FROM inserted
 		SELECT @CstSumme = SUM(Cst_Cost * Amount), @PrcSumme = SUM(Cst_Price * Amount) FROM OrderPos WHERE OrderId = @OrderId
-		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
+		UPDATE Orders SET Cst_CostSumme = ISNULL(@CstSumme, 0), Cst_PriceSumme = ISNULL(@PrcSumme, 0) WHERE OrderId = @OrderId
 
 	END
 
@@ -141,7 +141,7 @@ BEGIN
 	BEGIN
 		SELECT @OrderId = OrderId FROM deleted
 		SELECT @CstSumme = SUM(Cst_Cost * Amount), @PrcSumme = SUM(Cst_Price * Amount) FROM OrderPos WHERE OrderId = @OrderId
-		UPDATE Orders SET Cst_CostSumme = @CstSumme, Cst_PriceSumme = @PrcSumme WHERE OrderId = @OrderId
+		UPDATE Orders SET Cst_CostSumme = ISNULL(@CstSumme, 0), Cst_PriceSumme = ISNULL(@PrcSumme, 0) WHERE OrderId = @OrderId
 	END
 
 END
